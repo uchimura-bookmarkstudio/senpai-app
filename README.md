@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Senpai
 
-## Getting Started
+Senpai is a portfolio MVP for AI-assisted Japanese learning and career preparation.
 
-First, run the development server:
+The product concept is simple: young learners in Southeast Asia can chat with anime-style mentors, practice Japanese, and move toward Japan-related career opportunities through a friendly learning interface.
+
+## What this demonstrates
+
+- A production-shaped Next.js app with landing, authentication screens, and chat UI
+- LLM streaming through a server-side API route
+- Character-based system prompts for different mentor personalities
+- Multilingual UI foundations for English, Vietnamese, and Indonesian users
+- Optional Supabase authentication with demo-mode fallback
+- Public-safe environment setup with no committed secrets
+
+## Core features
+
+- Landing page that explains the learning and career concept
+- Login and signup screens backed by Supabase Auth when configured
+- AI chat experience with four mentor characters
+- Streaming Claude responses from the API route
+- Locale switcher for EN / VN / ID
+- Recent-message trimming to keep chat requests bounded
+
+## Tech stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Anthropic SDK
+- Supabase client libraries
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Purpose |
+|---|---:|---|
+| `ANTHROPIC_API_KEY` | Yes for AI chat | Server-side Claude API key |
+| `SENPAI_CHAT_MODEL` | No | Overrides the default chat model |
+| `NEXT_PUBLIC_SUPABASE_URL` | No | Enables Supabase Auth |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Enables Supabase Auth |
 
-## Learn More
+Without Supabase variables, the app can still be explored in demo mode.
 
-To learn more about Next.js, take a look at the following resources:
+## Repository structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+src/
+├── app/
+│   ├── api/chat/route.ts   # LLM streaming route
+│   ├── chat/page.tsx       # Chat screen
+│   ├── login/page.tsx      # Login page
+│   ├── signup/page.tsx     # Signup page
+│   └── page.tsx            # Landing page
+├── components/
+│   ├── auth-form.tsx
+│   ├── chat.tsx
+│   ├── locale-switcher.tsx
+│   └── site-header.tsx
+└── lib/
+    ├── characters.ts       # Mentor definitions and prompts
+    ├── i18n.ts             # UI copy dictionaries
+    ├── locale-context.tsx
+    └── supabase/client.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Public-safety notes
 
-## Deploy on Vercel
+This repository is intended as a portfolio sample. It should not contain:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Real API keys or Supabase credentials
+- Private user data
+- Proprietary business plans
+- Customer conversations or internal documents
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Use `.env.local` for local secrets. Only `.env.example` is intended to be committed.
+
+## Roadmap ideas
+
+- Add generated or licensed character images
+- Add structured JLPT N5 lesson modules
+- Add career readiness scoring
+- Add a learner dashboard
+- Add billing and subscription experiments
+- Add admin analytics for anonymized engagement metrics
+

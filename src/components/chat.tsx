@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SiteHeader } from "./site-header";
@@ -93,11 +94,16 @@ export function Chat() {
                 onClick={() => selectCharacter(c)}
                 className="flex items-center gap-4 rounded-2xl border border-border bg-card p-5 text-left transition hover:-translate-y-0.5"
               >
-                <div
-                  className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-3xl"
-                  style={{ background: `${c.color}22`, border: `1px solid ${c.color}55` }}
-                >
-                  {c.emoji}
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border bg-background">
+                  <Image
+                    src={c.image.src}
+                    alt={`${c.romaji} / ${c.name}`}
+                    width={96}
+                    height={96}
+                    sizes="64px"
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: c.image.position }}
+                  />
                 </div>
                 <div>
                   <div className="text-lg font-semibold">
@@ -131,11 +137,16 @@ export function Chat() {
           >
             ← {t.back}
           </button>
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-full text-xl"
-            style={{ background: `${active.color}22`, border: `1px solid ${active.color}55` }}
-          >
-            {active.emoji}
+          <div className="h-10 w-10 overflow-hidden rounded-full border border-border bg-background">
+            <Image
+              src={active.image.src}
+              alt={`${active.romaji} / ${active.name}`}
+              width={80}
+              height={80}
+              sizes="40px"
+              className="h-full w-full object-cover"
+              style={{ objectPosition: active.image.position }}
+            />
           </div>
           <div className="font-semibold">
             {active.name} <span className="text-muted">{active.romaji}</span>

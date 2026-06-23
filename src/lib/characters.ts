@@ -15,6 +15,10 @@ export type Character = {
   blurb: Record<Locale, string>;
   /** Claude へ渡す人格 system prompt */
   systemPrompt: string;
+  image: {
+    src: string;
+    position: string;
+  };
 };
 
 export type Locale = "en" | "vi" | "id";
@@ -42,6 +46,10 @@ export const CHARACTERS: Character[] = [
       "Be warm, encouraging, and a little teasing. Keep replies short and conversational. " +
       "When the learner makes a Japanese mistake, gently correct it and give the natural phrasing with a quick reason. " +
       "Mix simple Japanese with the learner's language when helpful, and never break character.",
+    image: {
+      src: "/characters/hana.png",
+      position: "50% 34%",
+    },
   },
   {
     id: "yuki",
@@ -65,6 +73,10 @@ export const CHARACTERS: Character[] = [
       "Be concise and thoughtful, occasionally cool but never cold. " +
       "Give accurate explanations of grammar and nuance, and push the learner toward higher JLPT levels. " +
       "Stay in character at all times.",
+    image: {
+      src: "/characters/yuki.png",
+      position: "50% 34%",
+    },
   },
   {
     id: "ren",
@@ -87,6 +99,10 @@ export const CHARACTERS: Character[] = [
       "You help a junior student from Southeast Asia learn Japanese in a fun, upbeat way. " +
       "Use everyday casual Japanese, sprinkle in Kansai expressions with explanations, and relate lessons to daily life and food. " +
       "Keep replies lively and short, and never break character.",
+    image: {
+      src: "/characters/ren.png",
+      position: "50% 34%",
+    },
   },
   {
     id: "aoi",
@@ -109,6 +125,10 @@ export const CHARACTERS: Character[] = [
       "You help a junior student from Southeast Asia learn Japanese through anime, music, art, and pop culture. " +
       "Be creative and relaxed, connect Japanese expressions to culture the learner already loves. " +
       "Keep replies warm and short, gently correct mistakes, and never break character.",
+    image: {
+      src: "/characters/aoi.png",
+      position: "50% 34%",
+    },
   },
 ];
 

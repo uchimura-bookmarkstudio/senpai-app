@@ -1,18 +1,27 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { getCharacter } from "@/lib/characters";
-
-// Senpai Chat のバックエンド。Claude にキャラ人格 system prompt を渡し、
-// 応答をテキストストリームで返す。MVP では Haiku を既定に（事業計画書 §5 多層ルーティング）。
 
 export const runtime = "nodejs";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
+type GeminiStreamEvent = {
+  event_type?: string;
+  delta?: {
+    type?: string;
+    text?: string;
+  };
+  error?: {
+    message?: string;
+  };
+};
+
+const GEMINI_INTERACTIONS_URL = "https://generativelanguage.googleapis.com/v1beta/interactions?alt=sse";
+const DEFAULT_MODEL = "gemini-3.5-flash";
 
 export async function POST(request: Request) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return Response.json(
-      { error: "ANTHROPIC_API_KEY is not configured." },
+      { error: "GEMINI_API_KEY is not configured." },
       { status: 503 }
     );
   }
@@ -31,30 +40,71 @@ export async function POST(request: Request) {
 
   const messages = (body.messages ?? [])
     .filter((m) => m && (m.role === "user" || m.role === "assistant") && m.content)
-    .slice(-20); // 直近20ターンに制限（コスト・コンテキスト保護）
+    .slice(-20);
 
   if (messages.length === 0) {
     return Response.json({ error: "No messages provided." }, { status: 400 });
   }
 
-  const client = new Anthropic({ apiKey });
-
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const encoder = new TextEncoder();
+      const decoder = new TextDecoder();
       try {
-        const anthropicStream = client.messages.stream({
-          model: process.env.SENPAI_CHAT_MODEL || "claude-haiku-4-5-20251001",
-          max_tokens: 1024,
-          system: character.systemPrompt,
-          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+        const conversation = messages
+          .map((m) => `${m.role === "user" ? "Learner" : "Senpai"}: ${m.content}`)
+          .join("\n\n");
+
+        const response = await fetch(GEMINI_INTERACTIONS_URL, {
+          method: "POST",
+          headers: {
+            "x-goog-api-key": apiKey,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: process.env.GEMINI_MODEL || DEFAULT_MODEL,
+            stream: true,
+            system_instruction: character.systemPrompt,
+            input: conversation,
+            generation_config: {
+              temperature: 0.85,
+              max_output_tokens: 1024,
+            },
+          }),
         });
 
-        anthropicStream.on("text", (text) => {
-          controller.enqueue(encoder.encode(text));
-        });
+        if (!response.ok || !response.body) {
+          const detail = await response.text().catch(() => "");
+          throw new Error(detail || `Gemini request failed: ${response.status}`);
+        }
 
-        await anthropicStream.finalMessage();
+        const reader = response.body.getReader();
+        let buffer = "";
+
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith("data:")) continue;
+
+            const data = trimmed.slice(5).trim();
+            if (!data || data === "[DONE]") continue;
+
+            const event = JSON.parse(data) as GeminiStreamEvent;
+            if (event.event_type === "step.delta" && event.delta?.type === "text" && event.delta.text) {
+              controller.enqueue(encoder.encode(event.delta.text));
+            }
+            if (event.error) {
+              throw new Error(event.error.message ?? "Gemini stream error");
+            }
+          }
+        }
         controller.close();
       } catch (err) {
         const msg = err instanceof Error ? err.message : "stream error";

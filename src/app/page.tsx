@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { useLocale } from "@/lib/locale-context";
@@ -14,29 +15,41 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="aurora">
-          <div className="mx-auto max-w-6xl px-5 py-20 text-center sm:py-28">
-            <span className="inline-block rounded-full border border-border bg-card/60 px-4 py-1.5 text-sm text-muted">
-              {t.heroBadge}
-            </span>
-            <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-              {t.heroTitle}
-            </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-              {t.heroSubtitle}
-            </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href="/signup"
-                className="w-full rounded-full bg-brand px-7 py-3 font-semibold text-background transition hover:opacity-90 sm:w-auto"
-              >
-                {t.ctaStart}
-              </Link>
-              <Link
-                href="/login"
-                className="w-full rounded-full border border-border px-7 py-3 font-semibold text-foreground transition hover:bg-card sm:w-auto"
-              >
-                {t.ctaLogin}
-              </Link>
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 sm:py-20 lg:grid-cols-[0.88fr_1.12fr]">
+            <div className="text-center lg:text-left">
+              <span className="inline-block rounded-full border border-border bg-card/60 px-4 py-1.5 text-sm text-muted">
+                {t.heroBadge}
+              </span>
+              <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
+                {t.heroTitle}
+              </h1>
+              <p className="mt-6 text-lg text-muted">
+                {t.heroSubtitle}
+              </p>
+              <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:items-start">
+                <Link
+                  href="/signup"
+                  className="w-full rounded-full bg-brand px-7 py-3 text-center font-semibold text-background transition hover:opacity-90 sm:w-auto"
+                >
+                  {t.ctaStart}
+                </Link>
+                <Link
+                  href="/login"
+                  className="w-full rounded-full border border-border px-7 py-3 text-center font-semibold text-foreground transition hover:bg-card sm:w-auto"
+                >
+                  {t.ctaLogin}
+                </Link>
+              </div>
+            </div>
+            <div className="overflow-hidden rounded-[2rem] border border-border bg-card/50 shadow-2xl shadow-brand/10">
+              <Image
+                src="/characters/senpai-cast.png"
+                alt="Hana, Yuki, Ren, and Aoi, the four Senpai mentors"
+                width={1448}
+                height={1086}
+                priority
+                className="h-auto w-full"
+              />
             </div>
           </div>
         </section>
@@ -55,11 +68,16 @@ export default function Home() {
                 className="group rounded-2xl border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-transparent"
                 style={{ boxShadow: `0 0 0 1px transparent` }}
               >
-                <div
-                  className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl"
-                  style={{ background: `${c.color}22`, border: `1px solid ${c.color}55` }}
-                >
-                  {c.emoji}
+                <div className="overflow-hidden rounded-2xl border border-border bg-background">
+                  <Image
+                    src={c.image.src}
+                    alt={`${c.romaji} / ${c.name}`}
+                    width={360}
+                    height={320}
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="aspect-[4/5] h-auto w-full object-cover transition duration-300 group-hover:scale-105"
+                    style={{ objectPosition: c.image.position }}
+                  />
                 </div>
                 <h3 className="mt-4 text-xl font-semibold">
                   {c.name}{" "}

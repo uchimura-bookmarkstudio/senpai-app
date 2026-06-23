@@ -7,7 +7,7 @@ The product concept is simple: young learners in Southeast Asia can chat with an
 ## What this demonstrates
 
 - A production-shaped Next.js app with landing, authentication screens, and chat UI
-- LLM streaming through a server-side API route
+- Gemini response streaming through a server-side API route
 - Character-based system prompts for different mentor personalities
 - Multilingual UI foundations for English, Vietnamese, and Indonesian users
 - Optional Supabase authentication with demo-mode fallback
@@ -28,7 +28,7 @@ The product concept is simple: young learners in Southeast Asia can chat with an
 - React 19
 - TypeScript
 - Tailwind CSS v4
-- Anthropic SDK
+- Gemini API
 - Supabase client libraries
 
 ## Getting started
@@ -45,8 +45,8 @@ Open `http://localhost:3000`.
 
 | Variable | Required | Purpose |
 |---|---:|---|
-| `ANTHROPIC_API_KEY` | Yes for AI chat | Server-side Claude API key |
-| `SENPAI_CHAT_MODEL` | No | Overrides the default chat model |
+| `GEMINI_API_KEY` | Yes for AI chat | Server-side Gemini API key |
+| `GEMINI_MODEL` | No | Overrides the default chat model |
 | `NEXT_PUBLIC_SUPABASE_URL` | No | Enables Supabase Auth |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No | Enables Supabase Auth |
 
@@ -93,4 +93,3 @@ Use `.env.local` for local secrets. Only `.env.example` is intended to be commit
 - Add a learner dashboard
 - Add billing and subscription experiments
 - Add admin analytics for anonymized engagement metrics
-
